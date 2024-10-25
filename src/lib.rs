@@ -13,7 +13,7 @@ struct CustomClaims {
 pub async fn jwt_middleware(
     req: ServiceRequest,
     credentials: BearerAuth,
-) -> Result<ServiceRequest, Error> {
+) -> Result<ServiceRequest, (Error, ServiceRequest)> {
     let token = credentials.token();
     let secret = env::var("SUPABASE_JWT_SECRET").expect("JWT secret not set");
 
@@ -21,11 +21,12 @@ pub async fn jwt_middleware(
     let key = HS256Key::from_bytes(secret.as_bytes());
 
     // Verify the token and extract claims
-    let claims = key
-        .verify_token::<CustomClaims>(token, None)
-        .map_err(|_| actix_web::error::ErrorUnauthorized("Invalid JWT"))?;
-
-    // Insert the claims into the request context
-    req.extensions_mut().insert(claims.custom);
-    Ok(req)
+    match key.verify_token::<CustomClaims>(token, None) {
+        Ok(claims) => {
+            // Insert the claims into the request context
+            req.extensions_mut().insert(claims.custom);
+            Ok(req)
+        }
+        Err(_) => Err((actix_web::error::ErrorUnauthorized("Invalid JWT"), req)),
+    }
 }
