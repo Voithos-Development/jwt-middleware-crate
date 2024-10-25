@@ -1,12 +1,12 @@
 use actix_web::{dev::ServiceRequest, Error, HttpMessage};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
-use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
-use serde::{Deserialize, Serialize};
+use jwt_simple::prelude::*;
+use std::env;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Claims {
-    pub sub: String,
-    pub exp: usize,
+struct CustomClaims {
+    sub: String,
+    exp: u64,
 }
 
 pub async fn jwt_middleware(
@@ -14,16 +14,17 @@ pub async fn jwt_middleware(
     credentials: BearerAuth,
 ) -> Result<ServiceRequest, Error> {
     let token = credentials.token();
-    let secret = std::env::var("SUPABASE_JWT_SECRET").expect("JWT secret not set");
+    let secret = env::var("SUPABASE_JWT_SECRET").expect("JWT secret not set");
 
-    let validation = Validation::new(Algorithm::HS256);
-    let decoded = decode::<Claims>(
-        token,
-        &DecodingKey::from_secret(secret.as_ref()),
-        &validation,
-    )
-    .map_err(|_| actix_web::error::ErrorUnauthorized("Invalid JWT"))?;
+    // Create the key for HS256 algorithm
+    let key = HS256Key::from_bytes(secret.as_bytes());
 
-    req.extensions_mut().insert(decoded.claims);
+    // Verify the token and extract claims
+    let claims = key
+        .verify_token::<CustomClaims>(token, None)
+        .map_err(|_| actix_web::error::ErrorUnauthorized("Invalid JWT"))?;
+
+    // Insert the claims into the request context
+    req.extensions_mut().insert(claims.custom);
     Ok(req)
 }
