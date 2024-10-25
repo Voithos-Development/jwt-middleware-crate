@@ -1,6 +1,7 @@
 use actix_web::{dev::ServiceRequest, Error, HttpMessage};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use jwt_simple::prelude::*;
+use serde::{Deserialize, Serialize};
 use std::env;
 
 #[derive(Debug, Serialize, Deserialize)]

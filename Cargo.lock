@@ -1680,6 +1680,7 @@ dependencies = [
  "actix-web-httpauth",
  "jwt-simple",
  "serde",
+ "serde_derive",
 ]
 
 [[package]]
