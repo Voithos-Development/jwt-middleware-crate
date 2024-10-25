@@ -1,0 +1,10 @@
+[package]
+name = "supabase-actix-auth_middleware"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.9.0"
+actix-web-httpauth = "0.8.2"
+jsonwebtoken = "9.3.0"
+serde = "1.0.213"
