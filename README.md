@@ -4,5 +4,5 @@ To import the `supabase-actix-auth_middleware` crate from a GitHub repository, a
 
 ```toml
 [dependencies]
-supabase-actix-auth_middleware = { git = "https://github.com/finnrw/supabase-actix-auth_middleware.git" }
+supabase-actix-auth_middleware = { git = "https://github.com/hscii/jwt-middleware-crate.git" }
 ```
