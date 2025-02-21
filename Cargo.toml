@@ -1,5 +1,5 @@
 [package]
-name = "supabase-actix-auth_middleware"
+name = "supabase_actix_auth_middleware"
 version = "0.1.0"
 edition = "2021"
 
