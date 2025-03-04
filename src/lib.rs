@@ -4,7 +4,7 @@ use jwt_simple::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::env;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CustomClaims {
     sub: String,
     exp: u64,
