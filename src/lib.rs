@@ -6,8 +6,8 @@ use std::env;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CustomClaims {
-    sub: String,
-    exp: u64,
+    pub sub: String,
+    pub exp: u64,
 }
 
 pub async fn jwt_middleware(
